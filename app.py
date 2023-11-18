@@ -111,7 +111,7 @@ def create():
         if request.method == 'POST':
             title = request.form['title']
             content = request.form['content']
-            blog = Blog(title=title, content=content)
+            blog = Blog(title=title, content=content, author_id=1)
             db.session.add(blog)
             db.session.commit()
             return redirect(url_for('index'))
