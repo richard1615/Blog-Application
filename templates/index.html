@@ -96,12 +96,10 @@
    <!-- masonry
    ================================================== -->
    <section id="bricks" class="with-top-sep">
-
-   	<div class="row masonry">
-		{% for blog in blogs %}
+	<div class="row masonry">
 		<!-- brick-wrapper -->
 		<div class="bricks-wrapper">
-
+			{% for blog in blogs %}
 			<div class="grid-sizer"></div>
 
 			<article class="brick entry format-standard animate-this">
@@ -131,8 +129,9 @@
 			  </div>
 
 			   </article> <!-- end article -->
-        {% endfor %}
-    </div>
+			   {% endfor %}
+            </div>
+	</div>
    	<div class="row">
    		
    		<nav class="pagination">
