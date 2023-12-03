@@ -60,6 +60,13 @@ def index():
     blogs = Blog.query.all()
     return render_template('index.html', blogs=blogs)
 
+@app.route('/dashboard')
+def dashboard():
+    if current_user.role == 'user':
+        return render_template('no_permission.html')
+    blogs = Blog.query.all()
+    return render_template('dashboard.html', blogs=blogs)
+
 @app.route('/blog/<int:blog_id>')
 def blog(blog_id):
     blog = Blog.query.get_or_404(blog_id)
@@ -111,7 +118,7 @@ def create():
         if request.method == 'POST':
             title = request.form['title']
             content = request.form['content']
-            blog = Blog(title=title, content=content)
+            blog = Blog(title=title, content=content, author_id=current_user.id)
             db.session.add(blog)
             db.session.commit()
             return redirect(url_for('index'))
