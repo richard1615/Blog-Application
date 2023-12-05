@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from datetime import date
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
@@ -20,6 +21,9 @@ class User(UserMixin, db.Model):
 class Blog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
+    type = db.Column(db.String(100), nullable=False)
+    date = db.Column(db.String(100), nullable=True)
+    description = db.Column(db.Text, nullable=False)
     content = db.Column(db.Text, nullable=False)
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
@@ -117,8 +121,11 @@ def create():
     if has_permission(current_user, 'create'):
         if request.method == 'POST':
             title = request.form['title']
+            type = request.form['category']
+            description = request.form['description']
             content = request.form['content']
-            blog = Blog(title=title, content=content, author_id=current_user.id)
+            date_blog = date.today()
+            blog = Blog(title=title, content=content, type=type, description=description, date=date_blog, author_id=current_user.id)
             db.session.add(blog)
             db.session.commit()
             return redirect(url_for('index'))
