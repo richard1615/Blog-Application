@@ -84,7 +84,7 @@
    <section id="page-header">
    	<div class="row current-cat">
    		<div class="col-full">
-   			<h1>Category: Photography</h1>
+   			<h1>My Blogs</h1>
    		</div>   		
    	</div>
    </section>
@@ -99,33 +99,107 @@
 			{% for blog in blogs %}
 			<div class="grid-sizer"></div>
 
-			<article class="brick entry format-standard animate-this">
+			{% if blog.type == "UI" %}
+			<article class="brick entry format-gallery group animate-this">
 
 			  <div class="entry-thumb">
-				 <a href="{{url_for('blog', blog_id = blog.id)}}" class="thumb-link">
-					 <img src="/static/images/thumbs/diagonal-building.jpg" alt="building">             
-				 </a>
+				<div class="post-slider flexslider">
+					<ul class="slides">
+						<li>
+							<img src="/static/images/thumbs/diagonal-building.jpg"> 
+						</li>
+						<li>
+							<img src="/static/images/thumbs/ferris-wheel.jpg"> 
+						</li>
+					</ul>							
+				</div> 
 			  </div>
 
 			  <div class="entry-text">
-				  <div class="entry-header">
+				<div class="entry-header">
 
-					  <div class="entry-meta">
-						  <span class="cat-links">
-							  <a href="#">Design</a> 
-							  <a href="#">Photography</a>               				
-						  </span>			
-					  </div>
+					<div class="entry-meta">
+						<span class="cat-links">
+							<a href="#">{{blog.type}}</a>               				
+						</span>			
+					</div>
 
-					  <h1 class="entry-title"><a href="{{url_for('blog', blog_id = blog.id)}}">{{blog.title}}</a></h1>
-					  
-				  </div>
-					   <div class="entry-excerpt">
-						{{blog.content}}
-						</div>
-			  </div>
+					<h1 class="entry-title"><a href="{{url_for('blog', blog_id=blog.id)}}">{{blog.title}}</a></h1>
+					
+				</div>
+					 <div class="entry-excerpt">
+						{{blog.description}}
+					 </div>
+			</div>
 
 			   </article> <!-- end article -->
+			   {% elif blog.type == "Design" %}
+			   <article class="brick entry format-gallery group animate-this">
+
+				<div class="entry-thumb">
+ 
+				   <div class="post-slider flexslider">
+							 <ul class="slides">
+								 <li>
+									 <img src="/static/images/thumbs/gallery/work1.jpg"> 
+								 </li>
+								 <li>
+									 <img src="/static/images/thumbs/gallery/work2.jpg"> 
+								 </li>
+								 <li>
+									 <img src="/static/images/thumbs/gallery/work3.jpg"> 
+								 </li>
+							 </ul>							
+						 </div> 
+ 
+				</div>
+ 
+				<div class="entry-text">
+					<div class="entry-header">
+ 
+						<div class="entry-meta">
+							<span class="cat-links">
+								<a href="#">{{blog.type}}</a>               				
+							</span>			
+						</div>
+ 
+						<h1 class="entry-title"><a href="{{url_for('blog', blog_id=blog.id)}}">{{blog.title}}</a></h1>
+						
+					</div>
+						 <div class="entry-excerpt">
+							{{blog.description}}
+						 </div>
+				</div>
+				
+				 </article> <!-- end article -->
+				{% else %}
+				<article class="brick entry animate-this">
+
+					<div class="entry-thumb">
+					   <a href="{{url_for('blog', blog_id=blog.id)}}" class="thumb-link">
+						   <img src="/static/images/thumbs/lighthouse.jpg" alt="Lighthouse">                      
+					   </a>
+					</div>
+	 
+					<div class="entry-text">
+						<div class="entry-header">
+	 
+							<div class="entry-meta">
+								<span class="cat-links">
+									<a href="#">{{blog.type}}</a> 
+								</span>			
+							</div>
+	 
+							<h1 class="entry-title"><a href="{{url_for('blog', blog_id=blog.id)}}">{{blog.title}}</a></h1>
+							
+						</div>
+							 <div class="entry-excerpt">
+								{{blog.description}}
+							</div>
+					</div>
+					
+					 </article> <!-- end article -->
+				{% endif %}
 			   {% endfor %}
             </div>
 	</div>
