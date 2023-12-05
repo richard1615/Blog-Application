@@ -101,11 +101,11 @@
 						<h1 class="page-title">{{blog.title}}</h1>	
 
 						<ul class="entry-meta">
-							<li class="date">September 06, 2016</li>						
-							<li class="cat"><a href="">Wordpress</a><a href="">Design</a></li>				
+							<li class="date">{{blog.date}}</li>						
+							<li class="cat"><a href="">{{blog.type}}</a></li>				
 						</ul>						
 
-						<p>{{blog.content}}</p>
+						<p>{{blog.content | safe}}</p>
 
 						<p><img src="/static/images/shutterbug.jpg" alt=""></p>
 
