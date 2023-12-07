@@ -62,14 +62,18 @@ def has_permission(user, permission):
 @app.route('/')
 def index():
     blogs = Blog.query.all()
-    return render_template('index.html', blogs=blogs)
+    return render_template('index.html', blogs=blogs, user = current_user)
 
 @app.route('/dashboard')
 def dashboard():
-    if current_user.role == 'user':
-        return render_template('no_permission.html')
-    blogs = Blog.query.all()
-    return render_template('dashboard.html', blogs=blogs)
+    try:
+        if current_user.role == 'admin':
+            blogs = Blog.query.all()
+            return render_template('dashboard.html', blogs=blogs)
+        else:
+            return render_template('no_permission.html')
+    except AttributeError:
+        return render_template('login.html')
 
 @app.route('/blog/<int:blog_id>')
 def blog(blog_id):
