@@ -27,6 +27,14 @@ class Blog(db.Model):
     content = db.Column(db.Text, nullable=False)
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=True)
+    blog_id = db.Column(db.Integer, db.ForeignKey('blog.id'), nullable=False)
+    author_id = db.Column(db.Text, db.ForeignKey('user.id'), nullable=False)
+    author_name = db.Column(db.String(100), nullable=True)
+    comment_date = db.Column(db.String(100), nullable=True)
+
 class Permission(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), nullable=False)
@@ -59,16 +67,20 @@ def has_permission(user, permission):
         return permission in user_permissions
     return False
 
-@app.route('/')
-def index():
-    blogs = Blog.query.all()
+def fetch_user(user):
     try:
-        role = current_user.role
-        public_user = current_user
+        role = user.role
+        public_user = user
     except AttributeError: # role not assigned
         class public_user():
             role = ''
-    return render_template('index.html', blogs=blogs, user = public_user)
+    return public_user
+
+@app.route('/')
+def index():
+    blogs = Blog.query.all()
+    user = fetch_user(current_user)
+    return render_template('index.html', blogs=blogs, user = user)
 
 @app.route('/dashboard')
 def dashboard():
@@ -84,7 +96,10 @@ def dashboard():
 @app.route('/blog/<int:blog_id>')
 def blog(blog_id):
     blog = Blog.query.get_or_404(blog_id)
-    return render_template('blog.html', blog=blog)
+    comments = Comment.query.filter(Comment.blog_id == blog_id).all()
+    user = fetch_user(current_user)
+    number_comm = len(comments)
+    return render_template('blog.html', blog=blog, comments = comments, num_comm = number_comm, user=user)
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -143,6 +158,18 @@ def create():
     else:
         return "Permission Denied", 403
 
+@app.route('/comment/<int:blog_id>', methods=['POST'])
+@login_required
+def comment(blog_id):
+    if request.method == "POST":
+        comment_date = date.today()
+        content = request.form['content']
+        comment = Comment(content = content, comment_date = comment_date, author_id = current_user.id, blog_id = blog_id, author_name = current_user.username)
+        db.session.add(comment)
+        db.session.commit()
+        return redirect(url_for('blog', blog_id = blog_id))
+    return render_template(url_for('blog', blog_id=blog_id))
+
 @app.route('/update/<int:blog_id>', methods=['GET', 'POST'])
 @login_required
 def update(blog_id):
@@ -150,6 +177,8 @@ def update(blog_id):
     if has_permission(current_user, 'update') and current_user.id == blog.author_id:
         if request.method == 'POST':
             blog.title = request.form['title']
+            blog.type = request.form['category']
+            blog.description = request.form['description']
             blog.content = request.form['content']
             db.session.commit()
             return redirect(url_for('index'))
