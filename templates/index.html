@@ -50,8 +50,16 @@
 
 	   	<nav id="main-nav-wrap">
 				<ul class="main-navigation sf-menu">
-					<li class="current"><a href="#" title="">Home</a></li>									
-					<li><a href="{{url_for('dashboard')}}" title="">Dashboard</a></li>									
+					<li class="current"><a href="#" title="">Home</a></li>
+					{% if user.role == 'admin' %}								
+						<li><a href="{{url_for('dashboard')}}" title="">Dashboard</a></li>
+						<li><a href="{{url_for('logout')}}" title="">Logout</a></li>
+					{% elif user.role != '' %}
+						<li>Hello {{user.username}} !</li>
+						<li><a href="{{url_for('logout')}}" title="">Logout</a></li>
+					{% else %}
+						<li><a href="{{url_for('login')}}">Login</a></li>
+					{% endif %}							
 				</ul>
 			</nav> <!-- end main-nav-wrap -->
 
