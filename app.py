@@ -63,8 +63,11 @@ def has_permission(user, permission):
     if user.role == 'admin':
         return True
     elif user.role == 'user':
-        user_permissions = [p.name for p in user.roles[0].permissions]
-        return permission in user_permissions
+        role_id = Role.query.filter_by(name='user').first().id
+        role_permissions = RolePermission.query.filter_by(role_id=role_id).all()
+        permissions = [Permission.query.get(rp.permission_id).name for rp in role_permissions]
+        # user_permissions = [p.name for p in user.roles[0].permissions]
+        return permission in permissions
     return False
 
 def fetch_user(user):
